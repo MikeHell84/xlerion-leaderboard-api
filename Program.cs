@@ -22,20 +22,36 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 string connectionString;
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
 if (!string.IsNullOrEmpty(databaseUrl))
 {
-    // Convierte formato URI de Railway a formato Npgsql
-    var uri = new Uri(databaseUrl);
-    var userInfo = uri.UserInfo.Split(':');
-    connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')}" +
-                       $";Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    // Railway usa formato: postgresql://user:password@host:port/database
+    // Npgsql necesita: Host=...;Port=...;Database=...;Username=...;Password=...
+    try
+    {
+        var uri = new Uri(databaseUrl);
+        var userInfo = uri.UserInfo.Split(':');
+        var host = uri.Host;
+        var port = uri.Port > 0 ? uri.Port : 5432;
+        var database = uri.AbsolutePath.TrimStart('/');
+        var username = Uri.UnescapeDataString(userInfo[0]);
+        var password = Uri.UnescapeDataString(userInfo[1]);
+        connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+        Console.WriteLine($"[Startup] Using Railway PostgreSQL at {host}:{port}/{database}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[Startup] Error parsing DATABASE_URL: {ex.Message}");
+        Console.WriteLine($"[Startup] DATABASE_URL value starts with: {databaseUrl.Substring(0, Math.Min(20, databaseUrl.Length))}...");
+        throw;
+    }
 }
 else
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+    Console.WriteLine($"[Startup] Using local connection string");
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
