@@ -63,12 +63,28 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("XlerionPolicy", policy =>
     {
-        policy.WithOrigins(
-                "http://localhost:3000",
-                "https://xlerion.com",
-                "https://*.xlerion.com")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        // Allow any localhost port during development, and restrict to our production domains otherwise.
+        policy.SetIsOriginAllowed(origin =>
+        {
+            if (string.IsNullOrEmpty(origin)) return false;
+            try
+            {
+                var uri = new Uri(origin);
+                // Allow any localhost hostname/port in Development
+                if (uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                // Allow main production domain and subdomains
+                if (uri.Host.Equals("xlerion.com", StringComparison.OrdinalIgnoreCase))
+                    return true;
+                if (uri.Host.EndsWith(".xlerion.com", StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            catch { /* ignore parse errors */ }
+            return false;
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
