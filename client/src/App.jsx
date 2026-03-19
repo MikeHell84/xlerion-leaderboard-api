@@ -13,7 +13,7 @@ export default function App() {
                     <Routes>
                         <Route path="/" element={<Leaderboard />} />
                         <Route path="/submit" element={<SubmitScore />} />
-                        <Route path="/player/:id" element={<PlayerStats />} />
+                        <Route path="/player" element={<PlayerStats />} />
                     </Routes>
                 </div>
             </div>
