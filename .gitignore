@@ -398,6 +398,11 @@ FodyWeavers.xsd
 # Windows Installer files from build outputs
 *.cab
 *.msi
+
+# Ignore appsettings development files containing secrets
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
 *.msix
 *.msm
 *.msp
