@@ -1,0 +1,131 @@
+### Seed demo requests for Railway deployment
+# Base URL
+# https://xlerion-leaderboard-api-production.up.railway.app
+
+### 1) Create LATAM player
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Players
+Content-Type: application/json
+
+{
+  "username": "demo_latam",
+  "displayName": "Demo LATAM",
+  "region": "LATAM"
+}
+
+### 2) Create NA player
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Players
+Content-Type: application/json
+
+{
+  "username": "demo_na",
+  "displayName": "Demo NA",
+  "region": "NA"
+}
+
+### 3) Create EU player
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Players
+Content-Type: application/json
+
+{
+  "username": "demo_eu",
+  "displayName": "Demo EU",
+  "region": "EU"
+}
+
+# --- Scores ---
+# After running the three player creation requests above, copy the returned `Id` values
+# and replace the placeholders `{{LATAM_ID}}`, `{{NA_ID}}`, `{{EU_ID}}` in the requests below.
+
+### 4) Submit score (LATAM)
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Scores
+Content-Type: application/json
+
+{
+  "playerId": {{LATAM_ID}},
+  "gameId": "xlerion-arena",
+  "value": 85,
+  "level": 7,
+  "sessionDurationSeconds": 420.5,
+  "metadata": "{ \"mode\": \"solo\" }"
+}
+
+### 5) Submit score (NA)
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Scores
+Content-Type: application/json
+
+{
+  "playerId": {{NA_ID}},
+  "gameId": "xlerion-arena",
+  "value": 120,
+  "level": 9,
+  "sessionDurationSeconds": 300.0,
+  "metadata": "{ \"mode\": \"ranked\" }"
+}
+
+### 6) Submit score (EU)
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Scores
+Content-Type: application/json
+
+{
+  "playerId": {{EU_ID}},
+  "gameId": "xlerion-arena",
+  "value": 60,
+  "level": 4,
+  "sessionDurationSeconds": 150.2,
+  "metadata": null
+}
+
+### 7) Submit another score (LATAM)
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Scores
+Content-Type: application/json
+
+{
+  "playerId": {{LATAM_ID}},
+  "gameId": "xlerion-arena",
+  "value": 130,
+  "level": 10,
+  "sessionDurationSeconds": 500.0,
+  "metadata": "{ \"special\": \"combo\" }"
+}
+
+### 8) Submit another score (NA)
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Scores
+Content-Type: application/json
+
+{
+  "playerId": {{NA_ID}},
+  "gameId": "xlerion-arena",
+  "value": 95,
+  "level": 6,
+  "sessionDurationSeconds": 260.0,
+  "metadata": null
+}
+
+# --- Unlock achievements ---
+# We unlock two achievements that SeedData ensures exist: FIRST_BLOOD and CENTURION
+
+### 9) Unlock FIRST_BLOOD for LATAM
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Achievements/unlock
+Content-Type: application/json
+
+{
+  "playerId": {{LATAM_ID}},
+  "gameId": "xlerion-arena",
+  "achievementCode": "FIRST_BLOOD"
+}
+
+### 10) Unlock CENTURION for NA
+POST https://xlerion-leaderboard-api-production.up.railway.app/api/Achievements/unlock
+Content-Type: application/json
+
+{
+  "playerId": {{NA_ID}},
+  "gameId": "xlerion-arena",
+  "achievementCode": "CENTURION"
+}
+
+# Notes
+# - Run requests in order. The player creation responses include the created player object with its generated `Id`.
+# - Replace the {{LATAM_ID}}, {{NA_ID}}, {{EU_ID}} placeholders with the actual numeric Ids returned
+#   from the create requests before running the score/achievement requests.
+# - If you prefer automation, I can add a tiny PowerShell script to run these in sequence and extract IDs automatically.
