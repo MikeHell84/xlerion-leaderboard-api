@@ -1,0 +1,498 @@
+Smoke tests started: 03/18/2026 16:04:27
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Xlerion Leaderboard API",
+    "description": "REST API for managing game scores, rankings, and achievements across Xlerion games.",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Achievements/unlock": {
+      "post": {
+        "tags": [
+          "Achievements"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": "@{$ref=#/components/schemas/AchievementUnlockDto}"
+            },
+            "text/json": {
+              "schema": "@{$ref=#/components/schemas/AchievementUnlockDto}"
+            },
+            "application/*+json": {
+              "schema": "@{$ref=#/components/schemas/AchievementUnlockDto}"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          }
+        }
+      }
+    },
+    "/api/Leaderboard/{gameId}": {
+      "get": {
+        "tags": [
+          "Leaderboard"
+        ],
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          }
+        }
+      }
+    },
+    "/api/Players/{id}/stats": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          }
+        }
+      }
+    },
+    "/api/Players": {
+      "post": {
+        "tags": [
+          "Players"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": "@{$ref=#/components/schemas/PlayerCreateDto}"
+            },
+            "text/json": {
+              "schema": "@{$ref=#/components/schemas/PlayerCreateDto}"
+            },
+            "application/*+json": {
+              "schema": "@{$ref=#/components/schemas/PlayerCreateDto}"
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          }
+        }
+      }
+    },
+    "/api/Scores": {
+      "post": {
+        "tags": [
+          "Scores"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": "@{$ref=#/components/schemas/ScoreSubmitDto}"
+            },
+            "text/json": {
+              "schema": "@{$ref=#/components/schemas/ScoreSubmitDto}"
+            },
+            "application/*+json": {
+              "schema": "@{$ref=#/components/schemas/ScoreSubmitDto}"
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": "@{schema=}"
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AchievementDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unlockedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AchievementUnlockDto": {
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gameId": {
+            "type": "string",
+            "nullable": true
+          },
+          "achievementCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LeaderboardEntryDto": {
+        "type": "object",
+        "properties": {
+          "rank": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          },
+          "bestScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayerCreateDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PlayerStatsDto": {
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "displayName": {
+            "type": "string",
+            "nullable": true
+          },
+          "region": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalGames": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "bestScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageScore": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalAchievements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "achievementPoints": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recentScores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecentScoreDto"
+            },
+            "nullable": true
+          },
+          "achievements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      },
+      "RecentScoreDto": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ScoreSubmitDto": {
+        "type": "object",
+        "properties": {
+          "playerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gameId": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sessionDurationSeconds": {
+            "type": "number",
+            "format": "double"
+          },
+          "metadata": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
+{
+  "rank": 1,
+  "playerId": 1,
+  "username": "xlerion_dev",
+  "displayName": "Xlerion",
+  "region": "LATAM",
+  "bestScore": 100,
+  "level": 1,
+  "recordedAt": "2026-03-18T20:59:25.7637865"
+}
+{
+  "playerId": 1,
+  "username": "xlerion_dev",
+  "displayName": "Xlerion",
+  "region": "LATAM",
+  "totalGames": 4,
+  "bestScore": 100,
+  "averageScore": 100,
+  "totalAchievements": 1,
+  "achievementPoints": 50,
+  "recentScores": [
+    {
+      "gameId": "xlerion-arena",
+      "value": 100,
+      "level": 1,
+      "recordedAt": "2026-03-18T20:59:25.7637865"
+    },
+    {
+      "gameId": "xlerion-arena",
+      "value": 100,
+      "level": 2,
+      "recordedAt": "2026-03-18T20:45:04.5617688"
+    },
+    {
+      "gameId": "xlerion-arena",
+      "value": 100,
+      "level": 2,
+      "recordedAt": "2026-03-18T20:36:40.2516962"
+    },
+    {
+      "gameId": "xlerion-arena",
+      "value": 100,
+      "level": 1,
+      "recordedAt": "2026-03-18T20:36:30.494221"
+    }
+  ],
+  "achievements": [
+    {
+      "code": "CENTURION",
+      "name": "Centurion",
+      "description": "Score 100+ in one session",
+      "points": 50,
+      "unlockedAt": "2026-03-18T20:36:30.6391684"
+    }
+  ]
+}
+{
+  "id": 5,
+  "playerId": 1,
+  "gameId": "xlerion-arena",
+  "value": 777,
+  "level": 0,
+  "sessionDurationSeconds": 0,
+  "recordedAt": "2026-03-18T21:04:28.0493692Z"
+}
+Smoke tests finished: 03/18/2026 16:04:28
